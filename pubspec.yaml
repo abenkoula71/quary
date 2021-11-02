@@ -1,0 +1,25 @@
+name: quary
+description: Snippet manager tool
+
+publish_to: 'none'
+
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  mason: ^0.0.1-dev.55
+  cupertino_icons: ^1.0.2
+  flutter_bloc: ^8.0.0-dev.2
+  shared_preferences: ^2.0.8
+  equatable: ^2.0.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^1.0.0
+
+flutter:
+  uses-material-design: true
