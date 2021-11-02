@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,7 +45,7 @@ class _HomeState extends State<Home> {
               keys.contains(LogicalKeyboardKey.controlLeft))) {
             if (bloc.state.availableSnippets.isNotEmpty) {
               bloc.add(SnippetCopied(bloc.state.availableSnippets.first));
-              return KeyEventResult.handled;
+              exit(0);
             }
           }
           return KeyEventResult.ignored;
