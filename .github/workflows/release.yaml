@@ -1,0 +1,114 @@
+name: release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  #linux:
+  #  runs-on: ubuntu-latest
+
+  #  defaults:
+  #    run:
+  #      shell: bash
+
+  #  steps:
+  #    - uses: actions/checkout@v2
+  #    - uses: subosito/flutter-action@v1
+  #      with:
+  #        channel: 'stable'
+  #    - run: sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev
+  #    - run: flutter config --enable-linux-desktop
+  #    - run: flutter build linux
+  #    - name: Zips the build
+  #      uses: papeloto/action-zip@v1
+  #      with:
+  #        files: quary/build/linux/x64/release/bundle/
+  #        dest: quary_linux.zip
+  #    - name: Upload binary
+  #      uses: actions/upload-artifact@v2
+  #      with:
+  #        name: quary_linux
+  #        path: quary_linux.zip
+
+  mac:
+    runs-on: macos-latest
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: quary
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: 'stable'
+      - run: flutter config --enable-macos-desktop
+      - run: flutter build macos
+      - name: Zips the build
+        run: cd build/macos/Build/Products/Release/ && zip -r quary_osx.zip Quary.app
+      - name: Upload binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: quary_osx
+          path: quary/build/macos/Build/Products/Release/quary_osx.zip
+
+  #windows:
+  #  runs-on: windows-latest
+
+  #  defaults:
+  #    run:
+  #      shell: bash
+  #      working-directory: quary
+
+  #  steps:
+  #    - uses: actions/checkout@v2
+  #    - uses: subosito/flutter-action@v1
+  #      with:
+  #        channel: 'stable'
+  #    - run: flutter config --enable-windows-desktop
+  #    - run: flutter build windows
+  #    - name: Zips the build
+  #      uses: papeloto/action-zip@v1
+  #      with:
+  #        files: quary/build/windows/runner/Release/
+  #        dest: quary_windows.zip
+  #    - name: Upload binary
+  #      uses: actions/upload-artifact@v2
+  #      with:
+  #        name: quary_windows
+  #        path: quary_windows.zip
+
+  release_desktop:
+    #needs: [linux, mac, windows]
+    needs: [mac]
+    runs-on: ubuntu-latest
+
+    steps:
+      #- name: Download Linux artifact
+      #  uses: actions/download-artifact@v2
+      #  with:
+      #    name: quary_linux
+
+      - name: Download Mac artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: quary_osx
+
+      #- name: Download Windows artifact
+      #  uses: actions/download-artifact@v2
+      #  with:
+      #    name: quary_windows
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: |
+            #  quary_linux.zip
+            quary_osx.zip
+            #quary_windows.zip
+          prerelease: true
